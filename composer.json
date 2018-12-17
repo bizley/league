@@ -1,0 +1,24 @@
+{
+  "name": "bizley/league",
+  "license": "MIT",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Paweł Bizley Brzozowski",
+      "email": "pawel@positive.codes"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.1.0",
+    "ext-pdo": "*"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "league\\": "src/"
+    }
+  }
+}
