@@ -80,7 +80,7 @@ final class Db
      */
     public function count(Query $query): int
     {
-        $statement = $this->getConnection()->prepare($query->select(['count(*)'])->statement());
+        $statement = $this->getConnection()->prepare($query->select(['COUNT(*)'])->statement());
 
         foreach ($query->getBindings() as $key => &$value) {
             $statement->bindParam($key, $value);
@@ -104,7 +104,7 @@ final class Db
     {
         $keys = array_keys($attributes);
 
-        $query = "INSERT INTO $table (" . implode(',', $keys) . ') VALUES (:' . implode(',:', $keys) . ')';
+        $query = "INSERT INTO `$table` (`" . implode('`,`', $keys) . '`) VALUES (:' . implode(',:', $keys) . ')';
 
         $statement = $this->getConnection()->prepare($query);
 
@@ -130,13 +130,13 @@ final class Db
     {
         $keys = array_keys($attributes);
 
-        $query = "UPDATE $table SET ";
+        $query = "UPDATE `$table` SET ";
 
         foreach ($keys as $key) {
-            $query .= "$key = :$key";
+            $query .= "`$key` = :$key";
         }
 
-        $query .= " WHERE $pk = :pk";
+        $query .= " WHERE `$pk` = :pk";
 
         $statement = $this->getConnection()->prepare($query);
 
@@ -157,7 +157,7 @@ final class Db
      */
     public function delete(string $table, string $pk, &$id): bool
     {
-        $query = "DELETE FROM $table WHERE $pk = :pk";
+        $query = "DELETE FROM `$table` WHERE `$pk` = :pk";
 
         $statement = $this->getConnection()->prepare($query);
 

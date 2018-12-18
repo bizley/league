@@ -111,6 +111,50 @@ final class Query
     private $bindings = [];
 
     /**
+     * @param string $value
+     * @return string
+     */
+    public function ticks(string $value): string
+    {
+        if (stripos($value, ' as ') !== false) {
+            $name = substr($value, 0, strpos($value, ' '));
+            $alias = substr($value, strrpos($value, ' ') + 1);
+        } else {
+            $name = $value;
+            $alias = null;
+        }
+
+        if (strpos($name, '.') !== false) {
+            $table = substr($name, 0, strpos($name, '.'));
+            $column = substr($name, strrpos($name, '.') + 1);
+            $name = "`$table`.`$column`";
+        } else {
+            $name = "`$name`";
+        }
+
+        if ($alias !== null) {
+            return "$name  AS `$alias`";
+        }
+
+        return $name;
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public function onTicks(string $value): string
+    {
+        $parts = preg_split('/\s*\=\s*/', $value);
+
+        foreach ($parts as &$part) {
+            $part = $this->ticks($part);
+        }
+
+        return implode(' = ', $parts);
+    }
+
+    /**
      * @return string
      */
     public function statement(): string
@@ -118,15 +162,19 @@ final class Query
         $query = 'SELECT';
 
         if ($this->select) {
-            $query .= ' ' . implode(', ', $this->select);
+            $columns = [];
+            foreach ($this->select as $column) {
+                $columns[] = $column === 'COUNT(*)' ? $column : $this->ticks($column);
+            }
+            $query .= ' ' . implode(', ', $columns);
         } else {
             $query .= ' *';
         }
 
-        $query .= " FROM {$this->from}";
+        $query .= ' FROM ' . $this->ticks($this->from);
 
         foreach ($this->relations as $joinTable => $on) {
-            $query .= " LEFT JOIN {$joinTable} ON {$on}";
+            $query .= ' LEFT JOIN ' . $this->ticks($joinTable) . ' ON ' . $this->onTicks($on);
         }
 
         if ($this->andWhere) {
@@ -136,7 +184,7 @@ final class Query
 
             foreach ($this->andWhere as $key => $value) {
                 $binding = ':' . str_replace('.', '', $key);
-                $conditions[] = "{$key} = {$binding}";
+                $conditions[] = $this->ticks($key) . " = {$binding}";
                 $this->bindings[$binding] = $value;
             }
 
@@ -154,7 +202,7 @@ final class Query
 
             foreach ($this->orWhere as $key => $value) {
                 $binding = ':' . str_replace('.', '', $key);
-                $conditions[] = "{$key} = {$binding}";
+                $conditions[] = $this->ticks($key) . " = {$binding}";
                 $this->bindings[$binding] = $value;
             }
 
@@ -171,7 +219,7 @@ final class Query
                 if (strtolower($sort) === 'desc') {
                     $dir = 'DESC';
                 }
-                $sorting[] = "$key $dir";
+                $sorting[] = $this->ticks($key) . " $dir";
             }
 
             $query .= implode(', ', $sorting);
