@@ -32,6 +32,18 @@
                         Wins<span class="badge badge-success"><?= $playerStat['rate'] ?>%</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Current streak<span class="badge badge-<?= $playerStat['streak']['badge'] ?>">
+                            <?= $playerStat['streak']['matches'] ?>
+                            <?= $playerStat['streak']['badge'] === 'success' ? 'WIN' : 'LOSS' ?><?= $playerStat['streak']['matches'] > 1 ? ($playerStat['streak']['badge'] === 'success' ? 'S' : 'ES') : '' ?>
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Best streak<span class="badge badge-success"><?= $playerStat['streak']['best'] ?></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Worst streak<span class="badge badge-secondary"><?= $playerStat['streak']['worst'] ?></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
                         Best side<span class="badge badge-<?= $playerStat['side'] === 'red' ? 'danger' : 'light' ?>"><?= $playerStat['side'] ?></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">

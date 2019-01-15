@@ -206,6 +206,73 @@ final class Stats
     }
 
     /**
+     * @param string $player
+     * @param array $matches
+     * @return array
+     */
+    public function checkStreak(string $player, array $matches): array
+    {
+        $allBadge = null;
+        $currentBadge = null;
+
+        $count = 0;
+        $current = true;
+
+        $allBest = 0;
+        $currentBest = 0;
+        $allWorst = 0;
+        $currentWorst = 0;
+
+        foreach ($matches as $match) {
+            if (($match['white_score'] > $match['red_score'] && ($match['white_defender'] === $player || $match['white_attacker'] === $player))
+                || ($match['white_score'] < $match['red_score'] && ($match['red_defender'] === $player || $match['red_attacker'] === $player))) {
+                $matchBadge = 'success';
+            } else {
+                $matchBadge = 'secondary';
+            }
+
+            if ($allBadge === null) {
+                $allBadge = $matchBadge;
+                $currentBadge = $matchBadge;
+
+                if ($current) {
+                    $count++;
+                }
+            } elseif ($currentBadge === $matchBadge) {
+                if ($current) {
+                    $count++;
+                }
+            } else {
+                $currentBadge = $matchBadge;
+                $current = false;
+                $currentBest = 0;
+                $currentWorst = 0;
+            }
+
+            if ($currentBadge === 'success') {
+                $currentBest++;
+
+                if ($allBest < $currentBest) {
+                    $allBest = $currentBest;
+                }
+            } else {
+                $currentWorst++;
+
+                if ($allWorst < $currentWorst) {
+                    $allWorst = $currentWorst;
+                }
+            }
+        }
+
+        return [
+            'badge' => $allBadge,
+            'matches' => $count,
+            'best' => $allBest,
+            'worst' => $allWorst,
+        ];
+    }
+
+    /**
      * @return array
      */
     public function getStats(): array
@@ -242,6 +309,7 @@ final class Stats
                         Team::tableName() . ' AS white' => 'white.id = match.white_team',
                         Team::tableName() . ' AS red' => 'red.id = match.red_team',
                     ])
+                    ->orderBy(['date' => 'desc'])
             );
 
             if (!$matches) {
@@ -257,6 +325,8 @@ final class Stats
 
             $playerStats['best-partner'] = $partners['best'];
             $playerStats['worst-partner'] = $partners['worst'];
+
+            $playerStats['streak'] = $this->checkStreak($player->name, $matches);
 
             $stats[] = $playerStats;
         }
