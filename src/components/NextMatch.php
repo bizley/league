@@ -177,17 +177,22 @@ final class NextMatch
     }
 
     /**
-     * @return string|null
+     * @return string
+     * @throws \UnexpectedValueException
      */
-    public function getNextAvailablePosition(): ?string
+    public function getNextAvailablePosition(): string
     {
-        $availablePosition = null;
+        $availablePosition = '';
 
         foreach (array_keys($this->schema) as $position) {
             if ($this->schema[$position] === null) {
                 $availablePosition = $position;
                 break;
             }
+        }
+
+        if ($availablePosition === '') {
+            throw new \UnexpectedValueException('Next available position can not be found!');
         }
 
         return $availablePosition;
@@ -198,6 +203,7 @@ final class NextMatch
      * @param array $matchPlayers
      * @param int $season
      * @return array
+     * @throws \UnexpectedValueException
      */
     public function drawSchema(string $playerWithLeastGames, array $matchPlayers, int $season): array
     {
@@ -208,13 +214,15 @@ final class NextMatch
         shuffle($positions);
 
         $nextMatch = false;
+        $nextSeason = 1;
 
         while (!$nextMatch) {
             shuffle($matchPlayers);
-            $this->resetSchema();
 
             foreach ($teams as $team) {
                 foreach ($positions as $position) {
+                    $this->resetSchema();
+
                     // make sure player with least games always plays
                     $this->schema[$team . '.' . $position] = $playerWithLeastGames;
 
@@ -246,6 +254,7 @@ final class NextMatch
                                                 ])
                                         )) {
                                             $nextMatch = true;
+                                            $nextSeason = $season;
                                             break 5;
                                         }
 
@@ -263,6 +272,9 @@ final class NextMatch
             $season++;
         }
 
-        return $this->schema;
+        return [
+            'schema' => $this->schema,
+            'season' => $nextSeason,
+        ];
     }
 }

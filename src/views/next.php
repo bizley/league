@@ -18,7 +18,11 @@
                 <?= $form->getError() ?>
             </div>
         <?php elseif ($form->availablePlayers): ?>
-            <?php $next = $form->possibleGames(); ?>
+            <?php
+            $possibleGames = $form->possibleGames();
+            $next = $possibleGames['schema'];
+            $season = $possibleGames['season'];
+            ?>
             <div class="row mb-5">
                 <div class="col-sm-5">
                     <div class="card bg-light">
@@ -31,6 +35,7 @@
                 </div>
                 <div class="col-sm-2 text-center">
                     <h1>VS</h1>
+                    <p class="badge badge-primary">Season <?= $season ?></p>
                 </div>
                 <div class="col-sm-5">
                     <div class="card bg-danger">
