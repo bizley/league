@@ -170,7 +170,10 @@ final class NextMatch
                     Team::tableName() . ' AS red' => 'red.id = match.red_team',
                 ])
         )) {
-            return $this->schema;
+            return [
+                'schema' => $this->schema,
+                'season' => $season,
+            ];
         }
 
         return $this->drawSchema($playerWithLeastGames, $matchPlayers, $season);
