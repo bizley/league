@@ -122,6 +122,20 @@ final class MatchForm
             'redDefender' => 'red defender',
         ];
 
+        if (!is_numeric($this->whiteScore)) {
+            $this->error = 'Wrong score given for white team';
+
+            return false;
+        }
+        if (!is_numeric($this->redScore)) {
+            $this->error = 'Wrong score given for red team';
+
+            return false;
+        }
+
+        $this->whiteScore = (int) $this->whiteScore;
+        $this->redScore = (int) $this->redScore;
+
         foreach ($playerFields as $field => $desc) {
             $found = false;
 
@@ -159,7 +173,7 @@ final class MatchForm
             return false;
         }
 
-        if ((int) $this->redScore === 10 && (int) $this->whiteScore === 10) {
+        if ($this->redScore === 10 && $this->whiteScore === 10) {
             $this->error = 'Wrong score given';
 
             return false;
