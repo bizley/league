@@ -4,6 +4,11 @@ namespace league\components;
 
 use league\models\Match;
 use league\models\Team;
+use UnexpectedValueException;
+use function array_keys;
+use function array_rand;
+use function count;
+use function shuffle;
 
 /**
  * Class NextMatch
@@ -181,7 +186,7 @@ final class NextMatch
 
     /**
      * @return string
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      */
     public function getNextAvailablePosition(): string
     {
@@ -195,7 +200,7 @@ final class NextMatch
         }
 
         if ($availablePosition === '') {
-            throw new \UnexpectedValueException('Next available position can not be found!');
+            throw new UnexpectedValueException('Next available position can not be found!');
         }
 
         return $availablePosition;
@@ -206,7 +211,7 @@ final class NextMatch
      * @param array $matchPlayers
      * @param int $season
      * @return array
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      */
     public function drawSchema(string $playerWithLeastGames, array $matchPlayers, int $season): array
     {

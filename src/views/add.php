@@ -1,6 +1,10 @@
 <?php
 
-/* @var $form \league\components\MatchForm */
+use league\components\MatchForm;
+use league\models\Player;
+
+/* @var $form MatchForm */
+/* @var $players Player[] */
 
 if ($form->getError()): ?>
     <div class="alert alert-danger" role="alert">

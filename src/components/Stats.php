@@ -1,10 +1,20 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace league\components;
 
 use league\models\Match;
 use league\models\Player;
 use league\models\Team;
+use function abs;
+use function array_key_exists;
+use function array_keys;
+use function arsort;
+use function count;
+use function round;
+use function sort;
+use function uasort;
 
 /**
  * Class Stats

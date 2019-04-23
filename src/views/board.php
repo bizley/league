@@ -1,5 +1,16 @@
 <?php
 
+use league\models\Match;
+use league\models\Player;
+
+/**
+ * @var $matches Match[]
+ * @var $totalPossibleMatches int
+ * @var $topSeason int
+ * @var $season int
+ * @var $players Player[]
+ */
+
 $matchesCount = count($matches);
 $percent = round($matchesCount * 100 / $totalPossibleMatches);
 

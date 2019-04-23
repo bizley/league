@@ -1,6 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace league\components;
+
+use function implode;
+use function preg_split;
+use function str_replace;
+use function stripos;
+use function strpos;
+use function substr;
 
 /**
  * Class Query

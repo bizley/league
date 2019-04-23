@@ -1,8 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace league\components;
 
 use PDO;
+use function array_keys;
+use function implode;
 
 /**
  * Class Db singleton
@@ -40,9 +44,9 @@ final class Db
 
             $dsn = $parameters['pdoDsn'] ?? null;
             $username = $parameters['dbUser'] ?? null;
-            $passwd = $parameters['dbPassword'] ?? null;
+            $password = $parameters['dbPassword'] ?? null;
 
-            $this->connection = new PDO($dsn, $username, $passwd);
+            $this->connection = new PDO($dsn, $username, $password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);

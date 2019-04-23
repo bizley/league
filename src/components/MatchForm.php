@@ -1,9 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace league\components;
 
+use Exception;
 use league\models\Match;
 use league\models\Team;
+use Throwable;
+use function explode;
+use function in_array;
+use function is_numeric;
 
 /**
  * Class MatchForm
@@ -146,7 +153,7 @@ final class MatchForm
                 }
             }
 
-            if (!$found || \in_array($this->$field, $selectedPlayers, true)) {
+            if (!$found || in_array($this->$field, $selectedPlayers, true)) {
                 $this->error = "Unknown player given at \"$desc\" position";
 
                 return false;
@@ -217,7 +224,7 @@ final class MatchForm
             $white->attacker = $this->whiteAttacker;
 
             if (!$white->save()) {
-                throw new \Exception('Error while saving white team');
+                throw new Exception('Error while saving white team');
             }
 
             $red = new Team();
@@ -225,7 +232,7 @@ final class MatchForm
             $red->attacker = $this->redAttacker;
 
             if (!$red->save()) {
-                throw new \Exception('Error while saving red team');
+                throw new Exception('Error while saving red team');
             }
 
             $match = new Match();
@@ -237,14 +244,14 @@ final class MatchForm
             $match->date = date('c');
 
             if (!$match->save()) {
-                throw new \Exception('Error while saving the match');
+                throw new Exception('Error while saving the match');
             }
 
             Db::getInstance()->commit();
 
             return true;
 
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->error = $exception->getMessage();
 
             Db::getInstance()->rollBack();

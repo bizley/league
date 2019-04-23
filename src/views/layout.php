@@ -1,4 +1,9 @@
-<!doctype html>
+<?php
+
+/* @var $menu string */
+/* @var $content string */
+
+?><!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">

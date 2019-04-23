@@ -1,10 +1,20 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace league\components;
 
 use league\models\Match;
 use league\models\Player;
 use league\models\Team;
+use function array_key_exists;
+use function count;
+use function header;
+use function ob_get_clean;
+use function ob_implicit_flush;
+use function ob_start;
+use function setcookie;
+use function time;
 
 /**
  * Class Controller

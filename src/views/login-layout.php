@@ -1,4 +1,8 @@
-<!doctype html>
+<?php
+
+/* @var $content string */
+
+?><!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">

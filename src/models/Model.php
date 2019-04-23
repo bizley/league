@@ -1,9 +1,19 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace league\models;
 
+use InvalidArgumentException;
 use league\components\Db;
 use league\components\Query;
+use RuntimeException;
+use Throwable;
+use function array_key_exists;
+use function array_keys;
+use function in_array;
+use function is_array;
+use function reset;
 
 /**
  * Class AbstractModel
@@ -38,7 +48,7 @@ abstract class Model implements RepoInterface
     public function __get(string $name)
     {
         if (!array_key_exists($name, $this->attributes)) {
-            throw new \InvalidArgumentException("No attribute named '$name' configured.");
+            throw new InvalidArgumentException("No attribute named '$name' configured.");
         }
         return $this->getAttribute($name);
     }
@@ -50,7 +60,7 @@ abstract class Model implements RepoInterface
     public function __set(string $name, $value): void
     {
         if (!array_key_exists($name, $this->attributes)) {
-            throw new \InvalidArgumentException("No attribute named '$name' configured.");
+            throw new InvalidArgumentException("No attribute named '$name' configured.");
         }
         $this->setAttribute($name, $value);
     }
@@ -74,7 +84,7 @@ abstract class Model implements RepoInterface
         try {
             $model = new static;
 
-            if (\is_array($where)) {
+            if (is_array($where)) {
                 $model->fetch($where, $order);
             } else {
                 $model->fetchByPk($where);
@@ -84,7 +94,7 @@ abstract class Model implements RepoInterface
 
             return $model;
 
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             return null;
         }
     }
@@ -117,7 +127,7 @@ abstract class Model implements RepoInterface
             $attributes = array_keys($model->attributes);
 
             foreach ($result as $key => $value) {
-                if (\in_array($key, $attributes, true)) {
+                if (in_array($key, $attributes, true)) {
                     $model->$key = $value;
                 }
             }
@@ -143,7 +153,7 @@ abstract class Model implements RepoInterface
                 ->orderBy($order)
         );
         if (!$fetched) {
-            throw new \RuntimeException('Empty query result for table ' . static::tableName());
+            throw new RuntimeException('Empty query result for table ' . static::tableName());
         }
 
         $result = reset($fetched);
@@ -151,7 +161,7 @@ abstract class Model implements RepoInterface
         $attributes = array_keys($this->attributes);
 
         foreach ($result as $key => $value) {
-            if (\in_array($key, $attributes, true)) {
+            if (in_array($key, $attributes, true)) {
                 $this->$key = $value;
             }
         }
@@ -174,6 +184,7 @@ abstract class Model implements RepoInterface
         if ($this->getId() === null) {
             return $this->insert();
         }
+
         return $this->update($attributes);
     }
 
@@ -185,7 +196,7 @@ abstract class Model implements RepoInterface
     protected function prepareAttributes(array $attributes = []): void
     {
         foreach (array_keys($this->attributes) as $name) {
-            if (!$attributes || \in_array($name, $attributes, true)) {
+            if (!$attributes || in_array($name, $attributes, true)) {
                 $this->preparedAttributes[$name] = $this->$name;
             }
         }

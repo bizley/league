@@ -1,3 +1,15 @@
+<?php
+
+use league\components\Stats;
+
+/**
+ * @var $topSeason int
+ * @var $season int
+ * @var $stats Stats
+ * @var $totalPossibleMatches int
+ */
+
+?>
 <div class="row">
     <div class="col-sm-2">
         <ul class="nav flex-sm-column">
