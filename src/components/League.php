@@ -39,7 +39,9 @@ final class League
      */
     public function isLogged(): bool
     {
-        if ($_SERVER['REMOTE_ADDR'] === '95.143.245.171') {
+        $parameters = require __DIR__ . '/../config.php';
+
+        if ($_SERVER['REMOTE_ADDR'] === $parameters['officeIP']) {
             return true;
         }
 

@@ -14,4 +14,5 @@ return [
     'pdoDsn' => 'mysql:host=localhost;dbname=league', // see description above
     'dbUser' => null, // database user name if required
     'dbPassword' => null, // database password if required
+    'officeIP' => null, // office IP to skip login
 ];
