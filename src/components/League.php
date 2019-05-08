@@ -60,22 +60,26 @@ final class League
                 return (new Controller())->logout();
             case '/add':
                 return (new Controller())->add();
-            case '/next':
-                return (new Controller())->next();
             case '/stats':
                 return (new Controller())->stats();
+            case '/next':
+                return (new Controller())->next();
         }
 
         if (preg_match('/^\/seasons\/(\d+)\/?$/', $request, $matches)) {
-            return (new Controller())->board((int) $matches[1]);
+            return (new Controller())->board((int)$matches[1]);
         }
 
         if (preg_match('/^\/stats\/(\d+)\/?$/', $request, $matches)) {
-            return (new Controller())->stats((int) $matches[1]);
+            return (new Controller())->stats((int)$matches[1]);
         }
 
         if (preg_match('/^\/add\/([\w\-]+)\/?$/', $request, $matches)) {
             return (new Controller())->add($matches[1]);
+        }
+
+        if (preg_match('/^\/next\/(\d+)\/?$/', $request, $matches)) {
+            return (new Controller())->next((int)$matches[1]);
         }
 
         return (new Controller())->board();

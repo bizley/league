@@ -152,10 +152,23 @@ final class Controller
     }
 
     /**
+     * @param int $season
      * @return bool
      */
-    public function next(): bool
+    public function next(int $season = null): bool
     {
+        $lastSeason = Match::find([], ['season' => 'desc']);
+
+        $topSeason = 1;
+
+        if ($lastSeason) {
+            $topSeason = (int) $lastSeason->season;
+        }
+
+        if ($season === null || $season > $topSeason) {
+            $season = $topSeason;
+        }
+
         $players = Player::findAll();
 
         $form = new NextMatch($players);
@@ -168,6 +181,8 @@ final class Controller
             'menu' => 'next',
             'players' => $players,
             'form' => $form,
+            'topSeason' => $topSeason,
+            'season' => $season,
         ]);
     }
 

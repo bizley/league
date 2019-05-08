@@ -3,12 +3,24 @@
 use league\components\MatchForm;
 use league\models\Player;
 
-/* @var $form MatchForm */
-/* @var $players Player[] */
+/**
+ * @var $form MatchForm
+ * @var $players Player[]
+ * @var $topSeason int
+ * @var $season int
+ */
 
 ?>
 <div class="row">
     <div class="col-sm-3 text-center">
+        <ul class="nav nav-pills flex-sm-column mb-5">
+            <?php for ($i = $topSeason; $i > 0; $i--): ?>
+                <li class="nav-item">
+                    <a class="nav-link <?= $i === $season ? 'disabled' : '' ?>" href="/next/<?= $i ?>">Season <?= $i ?></a>
+                </li>
+            <?php endfor; ?>
+        </ul>
+
         <form method="post">
             <div class="form-group">
                 <label for="availablePlayers">Select available players</label>

@@ -30,7 +30,9 @@ $percent = round($matchesCount * 100 / $totalPossibleMatches);
         </ul>
         <ul class="list-unstyled">
             <?php foreach ($players as $player): ?>
-                <li><a href="#" class="badge badge-light filter player" data-filter="<?= $player->name ?>"><?= $player->full ?></a></li>
+                <?php if ($player->season <= $season): ?>
+                    <li><a href="#" class="badge badge-light filter player" data-filter="<?= $player->name ?>"><?= $player->full ?></a></li>
+                <?php endif; ?>
             <?php endforeach; ?>
         </ul>
         <ul class="list-unstyled">
@@ -43,6 +45,7 @@ $percent = round($matchesCount * 100 / $totalPossibleMatches);
         </ul>
     </div>
     <div class="col">
+        <h2>Season <?= $season ?></h2>
         <div class="progress">
             <div class="progress-bar" role="progressbar" style="width: <?= $percent ?>%" aria-valuenow="<?= $percent ?>" aria-valuemin="0" aria-valuemax="<?= $percent ?>">
                 <?= $percent ?>% (<?= $matchesCount ?> / <?= $totalPossibleMatches ?>)

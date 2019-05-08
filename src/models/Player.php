@@ -32,5 +32,6 @@ final class Player extends Model
     protected $attributes = [
         'name' => null,
         'full' => null,
+        'season' => null,
     ];
 }

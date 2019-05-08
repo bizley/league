@@ -21,6 +21,7 @@ use league\components\Stats;
         </ul>
     </div>
     <div class="col">
+        <h2>Season <?= $season ?></h2>
         <?php $playerStats = $stats->getStats();
         foreach ($playerStats as $playerStat): $percent = round($playerStat['score']['total'] * 100 / $totalPossibleMatches); ?>
             <div class="card float-left mb-3 mr-3" style="width: 18rem;">
