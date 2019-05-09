@@ -34,7 +34,6 @@ This is simple foosball league project.
 
 ## Next match
 
-- Selected player with least games played in total is always suggested for next match at random position.
-- The rest of the players are assigned positions randomly.
-- Above two points are repeated until the drawn match has not been played before in the season.
+- Players available for next match are assigned to positions randomly.
+- Match drawing is repeated until the drawn match has not been played before in the season.
 - If all season combinations for available players have been already played next season match is drawn.
