@@ -1,6 +1,7 @@
 CREATE TABLE `player`(
   `name` VARCHAR(2) PRIMARY KEY,
-  `full` VARCHAR(45)
+  `full` VARCHAR(45),
+  `season` INTEGER
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE=InnoDB;
 CREATE TABLE `team`(
   `id` INTEGER PRIMARY KEY AUTO_INCREMENT,

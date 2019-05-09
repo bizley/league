@@ -20,7 +20,9 @@ This is simple foosball league project.
     
 2. Prepare virtual host pointing to `/public` directory. Make sure server's URL rewrite engine is on.
 3. Prepare DB of your choice. You can find DB structure in `/src/structure.sql` file. Modify the SQL according to your DB engine if necessary.
-4. Insert all the players in DB table `player`. Column `name` stores player's initials and must be unique, column `full` stores player's full name.
+4. Insert all the players in DB table `player`. 
+   Column `name` stores player's initials and must be unique, column `full` stores player's full name, 
+   and column `season` stores number of first season player joined the league.
 5. Modify the `/src/config.php` file.
 
 ## Stats

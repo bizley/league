@@ -3,8 +3,10 @@
 use league\components\MatchForm;
 use league\models\Player;
 
-/* @var $form MatchForm */
-/* @var $players Player[] */
+/**
+ * @var $form MatchForm
+ * @var $players Player[]
+ */
 
 ?>
 <div class="row">
@@ -12,9 +14,9 @@ use league\models\Player;
         <form method="post">
             <div class="form-group">
                 <label for="availablePlayers">Select available players</label>
-                <select class="custom-select" name="availablePlayers[]" id="availablePlayers" multiple size="6">
+                <select class="custom-select" name="availablePlayers[]" id="availablePlayers" multiple size="7">
                     <?php $showAll = count($form->availablePlayers) === 0; foreach ($players as $player): ?>
-                    <option value="<?= $player->name ?>" <?= $showAll || in_array($player->name, $form->availablePlayers, true) ? 'selected' : '' ?>><?= $player->full ?></option>
+                        <option value="<?= $player->name ?>" <?= $showAll || in_array($player->name, $form->availablePlayers, true) ? 'selected' : '' ?>><?= $player->full ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

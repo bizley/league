@@ -21,6 +21,16 @@ final class NextMatch
      */
     public $availablePlayers = [];
 
+    /**
+     * @var array
+     */
+    public $playersSeasons = [];
+
+    /**
+     * @var int
+     */
+    public $lowestPossibleSeason;
+
     private $players;
 
     public function __construct(array $players)
@@ -69,6 +79,7 @@ final class NextMatch
             foreach ($this->players as $player) {
                 if ($player->name === $availablePlayer) {
                     $found = true;
+                    $this->playersSeasons[$availablePlayer] = $player->season;
                     break;
                 }
             }
@@ -138,11 +149,17 @@ final class NextMatch
 
         $this->resetSchema();
 
+        $this->lowestPossibleSeason = $this->playersSeasons[$playerWithLeastGames];
+
         foreach ($this->schema as $schemaPosition => $player) {
             if ($schemaPosition === $team . '.' . $position) {
                 $this->schema[$schemaPosition] = $playerWithLeastGames;
             } else {
-                $this->schema[$schemaPosition] = $matchPlayers[$playerIndex++];
+                $nextPlayer = $matchPlayers[$playerIndex++];
+                $this->schema[$schemaPosition] = $nextPlayer;
+                if ($this->lowestPossibleSeason < $this->playersSeasons[$nextPlayer]) {
+                    $this->lowestPossibleSeason = $this->playersSeasons[$nextPlayer];
+                }
             }
         }
     }
@@ -161,14 +178,12 @@ final class NextMatch
             }
         }
 
-        $season = League::currentSeason();
-
         $this->drawStartingSchema($playerWithLeastGames, $matchPlayers);
 
         if (!Db::getInstance()->fetch(
             (new Query())
                 ->from(Match::tableName())
-                ->where(array_merge($this->schema, ['season' => $season]))
+                ->where(array_merge($this->schema, ['season' => $this->lowestPossibleSeason]))
                 ->limit(1)
                 ->join([
                     Team::tableName() . ' AS white' => 'white.id = match.white_team',
@@ -177,11 +192,11 @@ final class NextMatch
         )) {
             return [
                 'schema' => $this->schema,
-                'season' => $season,
+                'season' => $this->lowestPossibleSeason,
             ];
         }
 
-        return $this->drawSchema($playerWithLeastGames, $matchPlayers, $season);
+        return $this->drawSchema($playerWithLeastGames, $matchPlayers);
     }
 
     /**
@@ -209,12 +224,13 @@ final class NextMatch
     /**
      * @param string $playerWithLeastGames
      * @param array $matchPlayers
-     * @param int $season
      * @return array
      * @throws UnexpectedValueException
      */
-    public function drawSchema(string $playerWithLeastGames, array $matchPlayers, int $season): array
+    public function drawSchema(string $playerWithLeastGames, array $matchPlayers): array
     {
+        $season = League::currentSeason();
+
         $teams = ['white', 'red'];
         $positions = ['defender', 'attacker'];
 
@@ -233,28 +249,43 @@ final class NextMatch
 
                     // make sure player with least games always plays
                     $this->schema[$team . '.' . $position] = $playerWithLeastGames;
+                    $this->lowestPossibleSeason = $this->playersSeasons[$playerWithLeastGames];
 
                     $position2 = $this->getNextAvailablePosition();
 
                     foreach ($matchPlayers as $player2) {
                         $this->schema[$position2] = $player2;
+                        if ($this->lowestPossibleSeason < $this->playersSeasons[$player2]) {
+                            $this->lowestPossibleSeason = $this->playersSeasons[$player2];
+                        }
 
                         $position3 = $this->getNextAvailablePosition();
 
                         foreach ($matchPlayers as $player3) {
                             if ($player3 !== $player2) {
                                 $this->schema[$position3] = $player3;
+                                if ($this->lowestPossibleSeason < $this->playersSeasons[$player3]) {
+                                    $this->lowestPossibleSeason = $this->playersSeasons[$player3];
+                                }
 
                                 $position4 = $this->getNextAvailablePosition();
 
                                 foreach ($matchPlayers as $player4) {
                                     if ($player4 !== $player3 && $player4 !== $player2) {
                                         $this->schema[$position4] = $player4;
+                                        if ($this->lowestPossibleSeason < $this->playersSeasons[$player4]) {
+                                            $this->lowestPossibleSeason = $this->playersSeasons[$player4];
+                                        }
+
+                                        $checkSeason = $season;
+                                        if ($checkSeason < $this->lowestPossibleSeason) {
+                                            $checkSeason = $this->lowestPossibleSeason;
+                                        }
 
                                         if (!Db::getInstance()->fetch(
                                             (new Query())
                                                 ->from(Match::tableName())
-                                                ->where(array_merge($this->schema, ['season' => $season]))
+                                                ->where(array_merge($this->schema, ['season' => $checkSeason]))
                                                 ->limit(1)
                                                 ->join([
                                                     Team::tableName() . ' AS white' => 'white.id = match.white_team',
@@ -262,7 +293,7 @@ final class NextMatch
                                                 ])
                                         )) {
                                             $nextMatch = true;
-                                            $nextSeason = $season;
+                                            $nextSeason = $checkSeason;
                                             break 5;
                                         }
 

@@ -17,10 +17,10 @@ $percent = round($matchesCount * 100 / $totalPossibleMatches);
 ?>
 <div class="row">
     <div class="col-sm-2">
-        <ul class="nav flex-sm-column mb-5">
+        <ul class="nav nav-pills flex-sm-column mb-5">
             <?php for ($i = $topSeason; $i > 0; $i--): ?>
                 <li class="nav-item">
-                    <a class="nav-link <?= $i === $season ? 'disabled' : '' ?>" href="/seasons/<?= $i ?>">Season <?= $i ?></a>
+                    <a class="nav-link <?= $i === $season ? 'active' : '' ?>" href="/seasons/<?= $i ?>">Season <?= $i ?></a>
                 </li>
             <?php endfor; ?>
         </ul>
@@ -30,7 +30,9 @@ $percent = round($matchesCount * 100 / $totalPossibleMatches);
         </ul>
         <ul class="list-unstyled">
             <?php foreach ($players as $player): ?>
-                <li><a href="#" class="badge badge-light filter player" data-filter="<?= $player->name ?>"><?= $player->full ?></a></li>
+                <?php if ($player->season <= $season): ?>
+                    <li><a href="#" class="badge badge-light filter player" data-filter="<?= $player->name ?>"><?= $player->full ?></a></li>
+                <?php endif; ?>
             <?php endforeach; ?>
         </ul>
         <ul class="list-unstyled">
@@ -43,6 +45,7 @@ $percent = round($matchesCount * 100 / $totalPossibleMatches);
         </ul>
     </div>
     <div class="col">
+        <h2>Season <?= $season ?></h2>
         <div class="progress">
             <div class="progress-bar" role="progressbar" style="width: <?= $percent ?>%" aria-valuenow="<?= $percent ?>" aria-valuemin="0" aria-valuemax="<?= $percent ?>">
                 <?= $percent ?>% (<?= $matchesCount ?> / <?= $totalPossibleMatches ?>)
