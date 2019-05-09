@@ -6,7 +6,6 @@ use league\models\Match;
 use league\models\Team;
 use UnexpectedValueException;
 use function array_keys;
-use function array_rand;
 use function count;
 use function shuffle;
 
@@ -94,34 +93,6 @@ final class NextMatch
         return true;
     }
 
-    /**
-     * @return string
-     */
-    public function getPlayerWithLeastGames(): string
-    {
-        $leastGames = null;
-        $playerToGo = null;
-
-        foreach ($this->availablePlayers as $player) {
-            $number = Db::getInstance()->count((new Query())->from(Team::tableName())->orWhere([
-                'defender' => $player,
-                'attacker' => $player,
-            ]));
-
-            if ($leastGames === null) {
-                $leastGames = $number;
-                $playerToGo = $player;
-            }
-
-            if ($leastGames > $number) {
-                $playerToGo = $player;
-                $leastGames = $number;
-            }
-        }
-
-        return $playerToGo;
-    }
-    
     private $schema = [];
 
     public function resetSchema(): void
@@ -135,31 +106,23 @@ final class NextMatch
     }
 
     /**
-     * @param string $playerWithLeastGames
      * @param array $matchPlayers
      */
-    public function drawStartingSchema(string $playerWithLeastGames, array $matchPlayers): void
+    public function drawStartingSchema(array $matchPlayers): void
     {
-        $team = array_rand(['white' => null, 'red' => null]);
-        $position = array_rand(['defender' => null, 'attacker' => null]);
-
         shuffle($matchPlayers);
 
         $playerIndex = 0;
 
         $this->resetSchema();
 
-        $this->lowestPossibleSeason = $this->playersSeasons[$playerWithLeastGames];
+        $this->lowestPossibleSeason = 0;
 
         foreach ($this->schema as $schemaPosition => $player) {
-            if ($schemaPosition === $team . '.' . $position) {
-                $this->schema[$schemaPosition] = $playerWithLeastGames;
-            } else {
-                $nextPlayer = $matchPlayers[$playerIndex++];
-                $this->schema[$schemaPosition] = $nextPlayer;
-                if ($this->lowestPossibleSeason < $this->playersSeasons[$nextPlayer]) {
-                    $this->lowestPossibleSeason = $this->playersSeasons[$nextPlayer];
-                }
+            $nextPlayer = $matchPlayers[$playerIndex++];
+            $this->schema[$schemaPosition] = $nextPlayer;
+            if ($this->lowestPossibleSeason < $this->playersSeasons[$nextPlayer]) {
+                $this->lowestPossibleSeason = $this->playersSeasons[$nextPlayer];
             }
         }
     }
@@ -169,16 +132,7 @@ final class NextMatch
      */
     public function possibleGames(): array
     {
-        $playerWithLeastGames = $this->getPlayerWithLeastGames();
-
-        $matchPlayers = [];
-        foreach ($this->availablePlayers as $player) {
-            if ($player !== $playerWithLeastGames) {
-                $matchPlayers[] = $player;
-            }
-        }
-
-        $this->drawStartingSchema($playerWithLeastGames, $matchPlayers);
+        $this->drawStartingSchema($this->availablePlayers);
 
         if (!Db::getInstance()->fetch(
             (new Query())
@@ -196,7 +150,7 @@ final class NextMatch
             ];
         }
 
-        return $this->drawSchema($playerWithLeastGames, $matchPlayers);
+        return $this->drawSchema($this->availablePlayers);
     }
 
     /**
@@ -222,20 +176,13 @@ final class NextMatch
     }
 
     /**
-     * @param string $playerWithLeastGames
      * @param array $matchPlayers
      * @return array
      * @throws UnexpectedValueException
      */
-    public function drawSchema(string $playerWithLeastGames, array $matchPlayers): array
+    public function drawSchema(array $matchPlayers): array
     {
         $season = League::currentSeason();
-
-        $teams = ['white', 'red'];
-        $positions = ['defender', 'attacker'];
-
-        shuffle($teams);
-        shuffle($positions);
 
         $nextMatch = false;
         $nextSeason = 1;
@@ -243,17 +190,21 @@ final class NextMatch
         while (!$nextMatch) {
             shuffle($matchPlayers);
 
-            foreach ($teams as $team) {
-                foreach ($positions as $position) {
-                    $this->resetSchema();
+            $this->resetSchema();
 
-                    // make sure player with least games always plays
-                    $this->schema[$team . '.' . $position] = $playerWithLeastGames;
-                    $this->lowestPossibleSeason = $this->playersSeasons[$playerWithLeastGames];
+            $this->lowestPossibleSeason = 0;
+            $position1 = $this->getNextAvailablePosition();
 
-                    $position2 = $this->getNextAvailablePosition();
+            foreach ($matchPlayers as $player1) {
+                $this->schema[$position1] = $player1;
+                if ($this->lowestPossibleSeason < $this->playersSeasons[$player1]) {
+                    $this->lowestPossibleSeason = $this->playersSeasons[$player1];
+                }
 
-                    foreach ($matchPlayers as $player2) {
+                $position2 = $this->getNextAvailablePosition();
+
+                foreach ($matchPlayers as $player2) {
+                    if ($player2 !== $player1) {
                         $this->schema[$position2] = $player2;
                         if ($this->lowestPossibleSeason < $this->playersSeasons[$player2]) {
                             $this->lowestPossibleSeason = $this->playersSeasons[$player2];
@@ -262,7 +213,7 @@ final class NextMatch
                         $position3 = $this->getNextAvailablePosition();
 
                         foreach ($matchPlayers as $player3) {
-                            if ($player3 !== $player2) {
+                            if ($player3 !== $player2 && $player3 !== $player1) {
                                 $this->schema[$position3] = $player3;
                                 if ($this->lowestPossibleSeason < $this->playersSeasons[$player3]) {
                                     $this->lowestPossibleSeason = $this->playersSeasons[$player3];
@@ -271,7 +222,7 @@ final class NextMatch
                                 $position4 = $this->getNextAvailablePosition();
 
                                 foreach ($matchPlayers as $player4) {
-                                    if ($player4 !== $player3 && $player4 !== $player2) {
+                                    if ($player4 !== $player3 && $player4 !== $player2 && $player4 !== $player1) {
                                         $this->schema[$position4] = $player4;
                                         if ($this->lowestPossibleSeason < $this->playersSeasons[$player4]) {
                                             $this->lowestPossibleSeason = $this->playersSeasons[$player4];
@@ -292,7 +243,6 @@ final class NextMatch
                                                     Team::tableName() . ' AS red' => 'red.id = match.red_team',
                                                 ])
                                         )) {
-                                            $nextMatch = true;
                                             $nextSeason = $checkSeason;
                                             break 5;
                                         }
@@ -306,6 +256,7 @@ final class NextMatch
                         $this->schema[$position2] = null;
                     }
                 }
+                $this->schema[$position1] = null;
             }
 
             $season++;
