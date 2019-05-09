@@ -79,18 +79,18 @@ final class Controller
         $topSeason = 1;
 
         if ($lastSeason) {
-            $topSeason = (int) $lastSeason->season;
+            $topSeason = (int)$lastSeason->season;
         }
 
         if (($season === null) && array_key_exists('LeagueBoardSeason', $_COOKIE)) {
-            $season = (int) $_COOKIE['LeagueBoardSeason'];
+            $season = (int)$_COOKIE['LeagueBoardSeason'];
         }
 
         if ($season === null || $season > $topSeason) {
             $season = $topSeason;
         }
 
-        setcookie('LeagueBoardSeason', (string) $season, time() + 30 * 24 * 60 * 60, '/');
+        setcookie('LeagueBoardSeason', (string)$season, time() + 30 * 24 * 60 * 60, '/');
 
         $matches = Db::getInstance()->fetch(
             (new Query())
@@ -112,12 +112,12 @@ final class Controller
                 ])
         );
 
-        $players = Player::findAll();
+        $players = Player::findAll(['<=', 'season', $season]);
 
         $playersLeft = count($players);
         $totalPossibleMatches = 1;
         $positions = 4;
-        while ($positions --> 0) {
+        while ($positions-- > 0) {
             $totalPossibleMatches *= $playersLeft--;
         }
 
@@ -152,23 +152,10 @@ final class Controller
     }
 
     /**
-     * @param int $season
      * @return bool
      */
-    public function next(int $season = null): bool
+    public function next(): bool
     {
-        $lastSeason = Match::find([], ['season' => 'desc']);
-
-        $topSeason = 1;
-
-        if ($lastSeason) {
-            $topSeason = (int) $lastSeason->season;
-        }
-
-        if ($season === null || $season > $topSeason) {
-            $season = $topSeason;
-        }
-
         $players = Player::findAll();
 
         $form = new NextMatch($players);
@@ -181,8 +168,6 @@ final class Controller
             'menu' => 'next',
             'players' => $players,
             'form' => $form,
-            'topSeason' => $topSeason,
-            'season' => $season,
         ]);
     }
 
@@ -197,32 +182,32 @@ final class Controller
         $topSeason = 1;
 
         if ($lastSeason) {
-            $topSeason = (int) $lastSeason->season;
+            $topSeason = (int)$lastSeason->season;
         }
 
         if (($season === null) && array_key_exists('LeagueStatsSeason', $_COOKIE)) {
-            $season = (int) $_COOKIE['LeagueStatsSeason'];
+            $season = (int)$_COOKIE['LeagueStatsSeason'];
         }
 
         if ($season === null || $season > $topSeason) {
             $season = $topSeason;
         }
 
-        setcookie('LeagueStatsSeason', (string) $season, time() + 30 * 24 * 60 * 60, '/');
+        setcookie('LeagueStatsSeason', (string)$season, time() + 30 * 24 * 60 * 60, '/');
 
-        $players = Db::getInstance()->count((new Query())->from(Player::tableName()));
+        $players = Db::getInstance()->count((new Query())->from(Player::tableName())->where(['<=', 'season', $season]));
 
         $playersLeft = $players;
         $totalPossibleMatches = 1;
         $positions = 4;
-        while ($positions --> 0) {
+        while ($positions-- > 0) {
             $totalPossibleMatches *= $playersLeft--;
         }
 
         $playersLeft = $players - 1;
         $onePlayerLessPossibleMatches = 1;
         $positions = 4;
-        while ($positions --> 0) {
+        while ($positions-- > 0) {
             $onePlayerLessPossibleMatches *= $playersLeft--;
         }
 

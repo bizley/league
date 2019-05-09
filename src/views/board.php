@@ -17,10 +17,10 @@ $percent = round($matchesCount * 100 / $totalPossibleMatches);
 ?>
 <div class="row">
     <div class="col-sm-2">
-        <ul class="nav flex-sm-column mb-5">
+        <ul class="nav nav-pills flex-sm-column mb-5">
             <?php for ($i = $topSeason; $i > 0; $i--): ?>
                 <li class="nav-item">
-                    <a class="nav-link <?= $i === $season ? 'disabled' : '' ?>" href="/seasons/<?= $i ?>">Season <?= $i ?></a>
+                    <a class="nav-link <?= $i === $season ? 'active' : '' ?>" href="/seasons/<?= $i ?>">Season <?= $i ?></a>
                 </li>
             <?php endfor; ?>
         </ul>

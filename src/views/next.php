@@ -6,27 +6,17 @@ use league\models\Player;
 /**
  * @var $form MatchForm
  * @var $players Player[]
- * @var $topSeason int
- * @var $season int
  */
 
 ?>
 <div class="row">
     <div class="col-sm-3 text-center">
-        <ul class="nav nav-pills flex-sm-column mb-5">
-            <?php for ($i = $topSeason; $i > 0; $i--): ?>
-                <li class="nav-item">
-                    <a class="nav-link <?= $i === $season ? 'disabled' : '' ?>" href="/next/<?= $i ?>">Season <?= $i ?></a>
-                </li>
-            <?php endfor; ?>
-        </ul>
-
         <form method="post">
             <div class="form-group">
                 <label for="availablePlayers">Select available players</label>
-                <select class="custom-select" name="availablePlayers[]" id="availablePlayers" multiple size="6">
+                <select class="custom-select" name="availablePlayers[]" id="availablePlayers" multiple size="7">
                     <?php $showAll = count($form->availablePlayers) === 0; foreach ($players as $player): ?>
-                    <option value="<?= $player->name ?>" <?= $showAll || in_array($player->name, $form->availablePlayers, true) ? 'selected' : '' ?>><?= $player->full ?></option>
+                        <option value="<?= $player->name ?>" <?= $showAll || in_array($player->name, $form->availablePlayers, true) ? 'selected' : '' ?>><?= $player->full ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

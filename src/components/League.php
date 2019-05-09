@@ -78,10 +78,6 @@ final class League
             return (new Controller())->add($matches[1]);
         }
 
-        if (preg_match('/^\/next\/(\d+)\/?$/', $request, $matches)) {
-            return (new Controller())->next((int)$matches[1]);
-        }
-
         return (new Controller())->board();
     }
 }

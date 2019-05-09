@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace league\components;
 
 use function implode;
+use function in_array;
+use InvalidArgumentException;
+use function is_numeric;
 use function preg_split;
 use function str_replace;
 use function stripos;
@@ -191,10 +194,23 @@ final class Query
 
             $conditions = [];
 
-            foreach ($this->andWhere as $key => $value) {
-                $binding = ':' . str_replace('.', '', $key);
-                $conditions[] = $this->ticks($key) . " = {$binding}";
-                $this->bindings[$binding] = $value;
+            if (isset($this->andWhere[0])) {
+                if (!in_array($this->andWhere[0], ['<', '>', '<=', '>=', '=', '!='], true)) {
+                    throw new InvalidArgumentException('Invalid character provided.');
+                }
+                if (!isset($this->andWhere[1], $this->andWhere[2])) {
+                    throw new InvalidArgumentException('Missing column name and column value.');
+                }
+
+                $binding = ':' . str_replace('.', '', $this->andWhere[1]);
+                $conditions[] = $this->ticks($this->andWhere[1]) . " {$this->andWhere[0]} {$binding}";
+                $this->bindings[$binding] = $this->andWhere[2];
+            } else {
+                foreach ($this->andWhere as $key => $value) {
+                    $binding = ':' . str_replace('.', '', $key);
+                    $conditions[] = $this->ticks($key) . " = {$binding}";
+                    $this->bindings[$binding] = $value;
+                }
             }
 
             $query .= '(' . implode(' AND ', $conditions) . ')';
@@ -209,10 +225,23 @@ final class Query
 
             $conditions = [];
 
-            foreach ($this->orWhere as $key => $value) {
-                $binding = ':' . str_replace('.', '', $key);
-                $conditions[] = $this->ticks($key) . " = {$binding}";
-                $this->bindings[$binding] = $value;
+            if (isset($this->orWhere[0])) {
+                if (!in_array($this->orWhere[0], ['<', '>', '<=', '>=', '=', '!='], true)) {
+                    throw new InvalidArgumentException('Invalid character provided.');
+                }
+                if (!isset($this->orWhere[1], $this->orWhere[2])) {
+                    throw new InvalidArgumentException('Missing column name and column value.');
+                }
+
+                $binding = ':' . str_replace('.', '', $this->orWhere[1]);
+                $conditions[] = $this->ticks($this->orWhere[1]) . " {$this->orWhere[0]} {$binding}";
+                $this->bindings[$binding] = $this->orWhere[2];
+            } else {
+                foreach ($this->orWhere as $key => $value) {
+                    $binding = ':' . str_replace('.', '', $key);
+                    $conditions[] = $this->ticks($key) . " = {$binding}";
+                    $this->bindings[$binding] = $value;
+                }
             }
 
             $query .= '(' . implode(' OR ', $conditions) . ')';
