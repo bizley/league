@@ -218,7 +218,15 @@ final class MatchForm
             } else {
                 $season = 1;
                 foreach ($this->players as $player) {
-                    if ($player->season > $season) {
+                    if (
+                        $player->season > $season
+                        && in_array($player->name, [
+                            $this->whiteAttacker,
+                            $this->whiteDefender,
+                            $this->redAttacker,
+                            $this->redDefender,
+                        ], true)
+                    ) {
                         $season = $player->season;
                     }
                 }
