@@ -140,8 +140,8 @@ final class MatchForm
             return false;
         }
 
-        $this->whiteScore = (int) $this->whiteScore;
-        $this->redScore = (int) $this->redScore;
+        $this->whiteScore = (int)$this->whiteScore;
+        $this->redScore = (int)$this->redScore;
 
         foreach ($playerFields as $field => $desc) {
             $found = false;
@@ -197,8 +197,6 @@ final class MatchForm
         Db::getInstance()->beginTransaction();
 
         try {
-            $season = 1;
-
             $lastSimilarMatch = Db::getInstance()->fetch(
                 (new Query())
                     ->from(Match::tableName())
@@ -216,7 +214,14 @@ final class MatchForm
                     ])
             );
             if ($lastSimilarMatch) {
-                $season = (int) $lastSimilarMatch[0]['season'] + 1;
+                $season = (int)$lastSimilarMatch[0]['season'] + 1;
+            } else {
+                $season = 1;
+                foreach ($this->players as $player) {
+                    if ($player->season > $season) {
+                        $season = $player->season;
+                    }
+                }
             }
 
             $white = new Team();
