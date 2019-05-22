@@ -15,4 +15,5 @@ return [
     'dbUser' => 'root', // database user name if required
     'dbPassword' => 'root', // database password if required
     'officeIP' => '127.0.0.1', // office IP to skip login
+    'leagueUrl' => 'https://league.com/', // league URL with trailing slash
 ];

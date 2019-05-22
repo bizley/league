@@ -144,10 +144,18 @@ final class Controller
             return $this->redirect();
         }
 
+        $parameters = require __DIR__ . '/../config.php';
+
         return $this->render('add', [
             'menu' => 'add',
             'players' => $players,
             'form' => $form,
+            'og' => [
+                'url' => $parameters['leagueUrl'] . 'next-' . $form->setup,
+                'title' => 'Next League Match',
+                'site_name' => 'LEAGUE',
+                'description' => '',
+            ],
         ]);
     }
 
@@ -164,10 +172,13 @@ final class Controller
             $form->validate();
         }
 
+        $parameters = require __DIR__ . '/../config.php';
+
         return $this->render('next', [
             'menu' => 'next',
             'players' => $players,
             'form' => $form,
+            'url' => $parameters['leagueUrl'],
         ]);
     }
 

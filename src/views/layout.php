@@ -10,6 +10,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>League</title>
+<?php if (isset($og)): ?>
+    <meta property="og:url" content="<?= $og['url'] ?>">
+    <meta property="og:title" content="<?= $og['title'] ?>">
+    <meta property="og:site_name" content="<?= $og['site_name'] ?>">
+    <meta property="og:description" content="<?= $og['description'] ?>">
+<?php endif; ?>
 </head>
 <body>
 
@@ -42,6 +48,14 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <?php if ($menu === null): ?>
     <script src="/filter.js"></script>
+<?php elseif ($menu === 'next'): ?>
+    <script>
+        jQuery(function ($) {
+            $(".nextLink").on("click", function () {
+                $(this).select();
+            });
+        });
+    </script>
 <?php endif; ?>
 </body>
 </html>

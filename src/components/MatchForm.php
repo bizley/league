@@ -53,6 +53,11 @@ final class MatchForm
      */
     public $winningSide;
 
+    /**
+     * @var string
+     */
+    public $setup;
+
     private $players;
 
     /**

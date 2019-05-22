@@ -6,6 +6,7 @@ use league\models\Player;
 /**
  * @var $form MatchForm
  * @var $players Player[]
+ * @var $url string
  */
 
 ?>
@@ -69,6 +70,12 @@ use league\models\Player;
                     <a href="/add/red-<?= $next['white.attacker'] . '-' . $next['white.defender'] . '-' . $next['red.attacker'] . '-' . $next['red.defender'] ?>" class="btn btn-outline-danger">
                         Red won
                     </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 pt-5 pb-5 text-center">
+                    Link to this match
+                    <input type="text" class="nextLink form-control text-center" value="<?= $url . 'add/next-' . $next['white.attacker'] . '-' . $next['white.defender'] . '-' . $next['red.attacker'] . '-' . $next['red.defender'] ?>">
                 </div>
             </div>
         <?php endif; ?>
