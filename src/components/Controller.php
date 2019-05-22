@@ -160,6 +160,27 @@ final class Controller
     }
 
     /**
+     * @param string|null $setup
+     * @return bool
+     */
+    public function preview(string $setup = null): bool
+    {
+        $form = new MatchForm(Player::findAll(), $setup);
+
+        $parameters = require __DIR__ . '/../config.php';
+
+        return $this->render('preview', [
+            'menu' => 'preview',
+            'og' => [
+                'url' => $parameters['leagueUrl'] . 'next-' . $form->setup,
+                'title' => 'Next League Match',
+                'site_name' => 'LEAGUE',
+                'description' => '',
+            ],
+        ]);
+    }
+
+    /**
      * @return bool
      */
     public function next(): bool
