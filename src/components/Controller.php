@@ -260,9 +260,13 @@ final class Controller
     public function render(string $view, array $params = []): bool
     {
         $menu = null;
+        $og = null;
 
         if (array_key_exists('menu', $params)) {
             $menu = $params['menu'];
+        }
+        if (array_key_exists('og', $params)) {
+            $og = $params['og'];
         }
 
         $content = $this->renderFile($view, $params);
