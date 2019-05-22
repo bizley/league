@@ -75,7 +75,7 @@ use league\models\Player;
             <div class="row">
                 <div class="col-sm-12 pt-5 pb-5 text-center">
                     Link to this match
-                    <input type="text" class="nextLink form-control text-center" value="<?= $url . 'add/next-' . $next['white.attacker'] . '-' . $next['white.defender'] . '-' . $next['red.attacker'] . '-' . $next['red.defender'] ?>">
+                    <input type="text" class="nextLink form-control text-center" value="<?= $url . 'add/next' . $season . '-' . $next['white.attacker'] . '-' . $next['white.defender'] . '-' . $next['red.attacker'] . '-' . $next['red.defender'] ?>">
                 </div>
             </div>
         <?php endif; ?>

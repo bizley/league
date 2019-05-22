@@ -144,18 +144,10 @@ final class Controller
             return $this->redirect();
         }
 
-        $parameters = require __DIR__ . '/../config.php';
-
         return $this->render('add', [
             'menu' => 'add',
             'players' => $players,
             'form' => $form,
-            'og' => [
-                'url' => $parameters['leagueUrl'] . 'next-' . $form->setup,
-                'title' => 'Next League Match',
-                'site_name' => 'LEAGUE',
-                'description' => '',
-            ],
         ]);
     }
 
@@ -166,16 +158,17 @@ final class Controller
     public function preview(string $setup = null): bool
     {
         $form = new MatchForm(Player::findAll(), $setup);
+        $OGData = $form->generateOGData();
 
         $parameters = require __DIR__ . '/../config.php';
 
         return $this->render('preview', [
             'menu' => 'preview',
             'og' => [
-                'url' => $parameters['leagueUrl'] . 'next-' . $form->setup,
+                'url' => $parameters['leagueUrl'] . $OGData['link'],
                 'title' => 'Next League Match',
                 'site_name' => 'LEAGUE',
-                'description' => '',
+                'description' => $OGData['description'],
             ],
         ]);
     }

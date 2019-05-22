@@ -28,7 +28,7 @@ final class League
     public function run()
     {
         if (!$this->isLogged()) {
-            if (preg_match('/^\/add\/(next-[\w\-]+)\/?$/', $_SERVER['REQUEST_URI'], $matches)) {
+            if (preg_match('/^\/add\/(next[\w\-]+)\/?$/', $_SERVER['REQUEST_URI'], $matches)) {
                 return (new Controller())->preview($matches[1]);
             }
 
