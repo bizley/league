@@ -273,7 +273,10 @@ final class MatchForm
         }
     }
 
-    public function generateOGData()
+    /**
+     * @return array
+     */
+    public function generateOGData(): array
     {
         $link = $this->winningSide
             . '-' . $this->whiteAttacker
