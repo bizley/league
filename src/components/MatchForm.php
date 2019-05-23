@@ -272,4 +272,27 @@ final class MatchForm
             return false;
         }
     }
+
+    /**
+     * @return array
+     */
+    public function generateOGData(): array
+    {
+        $link = $this->winningSide
+            . '-' . $this->whiteAttacker
+            . '-' . $this->whiteDefender
+            . '-' . $this->redAttacker
+            . '-' . $this->redDefender;
+
+        $description = 'SEASON ' . (int)substr($this->winningSide, 4) . ' ___________________________________________________________________ ';
+        $description .= ':white_circle: ' . htmlspecialchars($this->whiteAttacker, ENT_QUOTES | ENT_SUBSTITUTE) . ' :dagger_knife: ';
+        $description .= htmlspecialchars($this->whiteDefender, ENT_QUOTES | ENT_SUBSTITUTE) . ' :shield: _________________ vs _________________ ';
+        $description .= ':red_circle: ' . htmlspecialchars($this->redAttacker, ENT_QUOTES | ENT_SUBSTITUTE) . ' :dagger_knife: ';
+        $description .= htmlspecialchars($this->redDefender, ENT_QUOTES | ENT_SUBSTITUTE) . ' :shield:';
+
+        return [
+            'link' => $link,
+            'description' => $description,
+        ];
+    }
 }

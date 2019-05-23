@@ -152,6 +152,28 @@ final class Controller
     }
 
     /**
+     * @param string|null $setup
+     * @return bool
+     */
+    public function preview(string $setup = null): bool
+    {
+        $form = new MatchForm(Player::findAll(), $setup);
+        $OGData = $form->generateOGData();
+
+        $parameters = require __DIR__ . '/../config.php';
+
+        return $this->render('preview', [
+            'menu' => 'preview',
+            'og' => [
+                'url' => $parameters['leagueUrl'] . $OGData['link'],
+                'title' => 'Next League Match',
+                'site_name' => 'LEAGUE',
+                'description' => $OGData['description'],
+            ],
+        ]);
+    }
+
+    /**
      * @return bool
      */
     public function next(): bool
@@ -164,10 +186,13 @@ final class Controller
             $form->validate();
         }
 
+        $parameters = require __DIR__ . '/../config.php';
+
         return $this->render('next', [
             'menu' => 'next',
             'players' => $players,
             'form' => $form,
+            'url' => $parameters['leagueUrl'],
         ]);
     }
 
@@ -228,9 +253,13 @@ final class Controller
     public function render(string $view, array $params = []): bool
     {
         $menu = null;
+        $og = null;
 
         if (array_key_exists('menu', $params)) {
             $menu = $params['menu'];
+        }
+        if (array_key_exists('og', $params)) {
+            $og = $params['og'];
         }
 
         $content = $this->renderFile($view, $params);
