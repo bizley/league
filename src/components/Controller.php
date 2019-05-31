@@ -214,9 +214,9 @@ final class Controller
         imagettftext($img, 40, 0, 134, 70, $black, $font, htmlspecialchars($form->whiteAttacker, ENT_QUOTES | ENT_SUBSTITUTE));
 
         imagestring($img, 2, 260, 15,  'attacker', $black);
-        imagettftext($img, 40, 0, 260, 70, $black, $font, htmlspecialchars($form->redDefender, ENT_QUOTES | ENT_SUBSTITUTE));
+        imagettftext($img, 40, 0, 260, 70, $black, $font, htmlspecialchars($form->redAttacker, ENT_QUOTES | ENT_SUBSTITUTE));
         imagestring($img, 2, 386, 15,  'defender', $black);
-        imagettftext($img, 40, 0, 386, 70, $black, $font, htmlspecialchars($form->redAttacker, ENT_QUOTES | ENT_SUBSTITUTE));
+        imagettftext($img, 40, 0, 386, 70, $black, $font, htmlspecialchars($form->redDefender, ENT_QUOTES | ENT_SUBSTITUTE));
 
         imagepng($img);
         imagedestroy($img);
