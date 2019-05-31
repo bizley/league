@@ -284,15 +284,18 @@ final class MatchForm
             . '-' . $this->redAttacker
             . '-' . $this->redDefender;
 
-        $description = 'SEASON ' . (int)substr($this->winningSide, 4) . ' ___________________________________________________________________ ';
-        $description .= ':white_circle: ' . htmlspecialchars($this->whiteAttacker, ENT_QUOTES | ENT_SUBSTITUTE) . ' :dagger_knife: ';
-        $description .= htmlspecialchars($this->whiteDefender, ENT_QUOTES | ENT_SUBSTITUTE) . ' :shield: _________________ vs _________________ ';
+        $description = 'SEASON ' . (int)substr($this->winningSide, 4) . ': ';
+        $description .= ':white_circle: ' . htmlspecialchars($this->whiteDefender, ENT_QUOTES | ENT_SUBSTITUTE) . ' :shield:';
+        $description .= htmlspecialchars($this->whiteAttacker, ENT_QUOTES | ENT_SUBSTITUTE) . ' :dagger_knife: vs ';
         $description .= ':red_circle: ' . htmlspecialchars($this->redAttacker, ENT_QUOTES | ENT_SUBSTITUTE) . ' :dagger_knife: ';
         $description .= htmlspecialchars($this->redDefender, ENT_QUOTES | ENT_SUBSTITUTE) . ' :shield:';
 
         return [
             'link' => $link,
             'description' => $description,
+            'image' => 'og-image/' . $link,
+            'image:width' => 500,
+            'image:height' => 100,
         ];
     }
 }

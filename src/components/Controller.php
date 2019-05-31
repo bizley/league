@@ -10,6 +10,14 @@ use league\models\Team;
 use function array_key_exists;
 use function count;
 use function header;
+use function imagecolorallocate;
+use function imagecreate;
+use function imagedestroy;
+use function imagefilledrectangle;
+use function imagepng;
+use function imagerectangle;
+use function imagestring;
+use function imagettftext;
 use function ob_get_clean;
 use function ob_implicit_flush;
 use function ob_start;
@@ -169,8 +177,51 @@ final class Controller
                 'title' => 'Next League Match',
                 'site_name' => 'LEAGUE',
                 'description' => $OGData['description'],
+                'image' => $parameters['leagueUrl'] . $OGData['image'],
+                'image:width' => $OGData['image-width'],
+                'image:height' => $OGData['image-height'],
             ],
         ]);
+    }
+
+    /**
+     * @param string|null $setup
+     * @return bool
+     */
+    public function ogImage(string $setup = null): bool
+    {
+        $form = new MatchForm(Player::findAll(), $setup);
+
+        $font = __DIR__ . '/../varsity_regular.ttf';
+        header('Content-Type: image/png');
+
+        $img = @imagecreate(500, 100) or die('Cannot Initialize new GD image stream');
+
+        imagecolorallocate($img, 255, 255, 255);
+        $red = imagecolorallocate($img, 255, 0, 0);
+        $black = imagecolorallocate($img, 0, 0, 0);
+
+        imagefilledrectangle($img, 249, 0, 499, 99, $red);
+
+        imagerectangle($img, 1, 1, 123, 98, $black);
+        imagerectangle($img, 125, 1, 247, 98, $black);
+        imagerectangle($img, 251, 1, 375, 98, $black);
+        imagerectangle($img, 377, 1, 498, 98, $black);
+
+        imagestring($img, 2, 10, 15,  'defender', $black);
+        imagettftext($img, 40, 0, 10, 70, $black, $font, htmlspecialchars($form->whiteDefender, ENT_QUOTES | ENT_SUBSTITUTE));
+        imagestring($img, 2, 134, 15,  'attacker', $black);
+        imagettftext($img, 40, 0, 134, 70, $black, $font, htmlspecialchars($form->whiteAttacker, ENT_QUOTES | ENT_SUBSTITUTE));
+
+        imagestring($img, 2, 260, 15,  'attacker', $black);
+        imagettftext($img, 40, 0, 260, 70, $black, $font, htmlspecialchars($form->redDefender, ENT_QUOTES | ENT_SUBSTITUTE));
+        imagestring($img, 2, 386, 15,  'defender', $black);
+        imagettftext($img, 40, 0, 386, 70, $black, $font, htmlspecialchars($form->redAttacker, ENT_QUOTES | ENT_SUBSTITUTE));
+
+        imagepng($img);
+        imagedestroy($img);
+
+        return true;
     }
 
     /**

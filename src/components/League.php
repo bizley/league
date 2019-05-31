@@ -31,6 +31,9 @@ final class League
             if (preg_match('/^\/add\/(next[\w\-]+)\/?$/', $_SERVER['REQUEST_URI'], $matches)) {
                 return (new Controller())->preview($matches[1]);
             }
+            if (preg_match('/^\/og-image\/(next[\w\-]+)\/?$/', $_SERVER['REQUEST_URI'], $matches)) {
+                return (new Controller())->ogImage($matches[1]);
+            }
 
             return (new Controller())->login();
         }
