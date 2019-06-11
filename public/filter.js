@@ -12,6 +12,11 @@ $(function() {
     function filterList() {
         let row = $("tr.match");
         row.removeClass("d-none");
+        let i = 0;
+        row.each(function () {
+            let currentRow = $(this);
+            currentRow.find('th').text(++i);
+        });
 
         if (players.length) {
             let check = [];
@@ -32,16 +37,24 @@ $(function() {
                     }
                 }
             });
-
+           
+            i = 0;
             row.each(function () {
                 if (type === "and") {
+                    let found = false;
                     let currentRow = $(this);
                     $.each(check, function(index, element) {
                         if (!currentRow.hasClass(element)) {
                             currentRow.addClass("d-none");
+                            found = false;
                             return false;
-                        }
+                        } else {
+                            found = true;
+                        }                      
                     });
+                    if (found) {
+                        currentRow.find('th').text(++i);
+                    }
                 } else {
                     let found = false;
                     let currentRow = $(this);
@@ -49,10 +62,14 @@ $(function() {
                         if (currentRow.hasClass(element)) {
                             found = true;
                             return false;
+                        } else {
+                            found = false;
                         }
                     });
                     if (!found) {
                         $(this).addClass("d-none");
+                    } else {
+                        currentRow.find('th').text(++i);
                     }
                 }
             });
