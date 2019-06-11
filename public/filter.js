@@ -12,11 +12,11 @@ $(function() {
     function filterList() {
         let row = $("tr.match");
         row.removeClass("d-none");
-        var n = 0
+        let i = 0;
         row.each(function () {
             let currentRow = $(this);
-            currentRow.find('th').text(++n);
-        })
+            currentRow.find('th').text(++i);
+        });
 
         if (players.length) {
             let check = [];
@@ -38,7 +38,7 @@ $(function() {
                 }
             });
            
-            var i = 0;
+            i = 0;
             row.each(function () {
                 if (type === "and") {
                     let found = false;
@@ -52,7 +52,7 @@ $(function() {
                             found = true;
                         }                      
                     });
-                    if(found){
+                    if (found) {
                         currentRow.find('th').text(++i);
                     }
                 } else {
@@ -68,7 +68,7 @@ $(function() {
                     });
                     if (!found) {
                         $(this).addClass("d-none");
-                    }else{
+                    } else {
                         currentRow.find('th').text(++i);
                     }
                 }
